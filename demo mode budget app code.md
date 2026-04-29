@@ -1380,27 +1380,53 @@
     }
 
     const defaultCalculationRules = [
-        { category: 'investments', name: 'Joint Brokerage', pct: 0.20, sources: 'ALL', desc: '20% of Total Income' },
-        { category: 'necessary', name: 'Tithing Donations', pct: 0.10, sources: 'ALL', desc: '10% of Total Income' },
-        { category: 'investments', name: 'Joint Crypto', pct: 0.01, sources: 'ALL', desc: '1% of Total Income' },
-        { category: 'investments', name: 'Alex Roth IRA', pct: 0.06, sources: ["Side Hustle", "Freelance", "Property Management"], desc: '6% of Side Hustle, Freelance & Prop Mgmt' },
-        { category: 'investments', name: 'Jordan Roth IRA', pct: 0.06, sources: ["Salary"], desc: '6% of Salary' }
+        { category: 'necessary', name: 'Tithing', pct: 0.10, sources: 'ALL', desc: '10% of Total Income' }
     ];
 
     const defaultAccounts = [
-        { name: 'Checking Account', balance: 2450.00 },
-        { name: 'Savings Account', balance: 8750.00 },
-        { name: 'Joint Brokerage', balance: 14320.00 },
-        { name: 'Alex Roth IRA', balance: 9180.00 },
-        { name: 'Jordan Roth IRA', balance: 7640.00 }
+        { name: 'Savings Account', balance: 0.00 }
     ];
 
     const defaultDataTemplate = {
         accounts: JSON.parse(JSON.stringify(defaultAccounts)),
-        income: [{ name: "Salary", budget: 2000.00, transactions: [{ amount: 2000.00, desc: "Paycheck", date: "2026-04-01" }] }, { name: "Side Hustle", budget: 45.00, transactions: [{ amount: 45.00, desc: "Etsy Sales", date: "2026-04-05" }] }, { name: "Freelance", budget: 800.00, transactions: [{ amount: 650.00, desc: "Client Project", date: "2026-04-10" }] }, { name: "Property Management", budget: 0.00, transactions: [] }, { name: "Taxes (Refund)", budget: 3211.00, transactions: [] }, { name: "Other Income", budget: 0.00, transactions: [] }],
-        necessary: [{ name: "Mortgage / Rent", budget: 1150.00, transactions: [{ amount: 1150.00, desc: "April Rent", date: "2026-04-01" }] }, { name: "Second Mortgage", budget: 0.00, transactions: [] }, { name: "Electricity", budget: 0.00, transactions: [] }, { name: "Gas / Oil", budget: 0.00, transactions: [] }, { name: "Water / Sewer", budget: 0.00, transactions: [] }, { name: "Trash / Internet / Cable", budget: 0.00, transactions: [] }, { name: "Cell / Land Line Phone", budget: 0.00, transactions: [] }, { name: "Auto Fuel", budget: 200.00, transactions: [{ amount: 58.40, desc: "Gas Station", date: "2026-04-03" }, { amount: 61.20, desc: "Gas Station", date: "2026-04-14" }] }, { name: "Auto Maintenance", budget: 25.00, transactions: [] }, { name: "Auto Insurance", budget: 0.00, transactions: [] }, { name: "Auto Registration / License", budget: 0.00, transactions: [] }, { name: "Groceries / Food", budget: 260.00, transactions: [{ amount: 87.34, desc: "Grocery Store", date: "2026-04-02" }, { amount: 94.11, desc: "Grocery Store", date: "2026-04-09" }] }, { name: "Home Supplies", budget: 25.00, transactions: [{ amount: 18.99, desc: "Hardware Store", date: "2026-04-07" }] }, { name: "Childcare / Dependents", budget: 0.00, transactions: [] }, { name: "Student Loans", budget: 0.00, transactions: [] }, { name: "Healthcare / Medical", budget: 126.42, transactions: [{ amount: 126.42, desc: "Health Insurance Premium", date: "2026-04-01" }] }, { name: "Dental Care / Insurance", budget: 29.42, transactions: [{ amount: 29.42, desc: "Dental Insurance", date: "2026-04-01" }] }, { name: "Vision Care / Insurance", budget: 9.90, transactions: [{ amount: 9.90, desc: "Vision Insurance", date: "2026-04-01" }] }, { name: "Life Insurance", budget: 0.00, transactions: [] }, { name: "Medicine / Prescriptions", budget: 0.00, transactions: [] }, { name: "Veterinarian / Pets", budget: 0.00, transactions: [] }, { name: "School / Tuition", budget: 0.00, transactions: [] }, { name: "Tithing Donations", budget: 0.00, transactions: [] }, { name: "Home / Rental Insurance", budget: 0.00, transactions: [] }, { name: "Property & School Taxes", budget: 0.00, transactions: [] }, { name: "Minimum Debt Payments", budget: 0.00, transactions: [] }],
-        discretionary: [{ name: "Dining Out", budget: 100.00, transactions: [{ amount: 24.50, desc: "Thai Restaurant", date: "2026-04-06" }, { amount: 18.75, desc: "Pizza", date: "2026-04-12" }] }, { name: "Concerts / Plays / Sports", budget: 0.00, transactions: [] }, { name: "Outdoor Recreation", budget: 0.00, transactions: [] }, { name: "Other Entertainment", budget: 0.00, transactions: [] }, { name: "Gym Membership", budget: 26.84, transactions: [{ amount: 26.84, desc: "Monthly Membership", date: "2026-04-01" }] }, { name: "Personal Care / Salon", budget: 0.00, transactions: [] }, { name: "Clothing", budget: 0.00, transactions: [] }, { name: "Furniture / Decor", budget: 0.00, transactions: [] }, { name: "Alex's Spending", budget: 50.00, transactions: [{ amount: 22.99, desc: "Amazon", date: "2026-04-08" }] }, { name: "Jordan's Spending", budget: 50.00, transactions: [{ amount: 34.50, desc: "Online Shopping", date: "2026-04-11" }] }, { name: "Subscriptions (Apple/Spotify/etc)", budget: 12.66, transactions: [{ amount: 12.66, desc: "Streaming Services", date: "2026-04-01" }] }, { name: "Gifts / Donations", budget: 0.00, transactions: [] }, { name: "Travel / Vacation", budget: 0.00, transactions: [] }, { name: "Other Monthly Spending", budget: 0.00, transactions: [] }, { name: "Annual Gym Membership", budget: 8.95, yearlyAmount: 107.42, transactions: [] }, { name: "Warehouse Club Membership", budget: 4.48, yearlyAmount: 53.73, transactions: [] }, { name: "Software Subscription", budget: 4.17, yearlyAmount: 49.99, transactions: [] }, { name: "Other Annual Expense", budget: 10.00, yearlyAmount: 120.00, transactions: [] }],
-        investments: [{ name: "Real Estate Investment", budget: 0.00, transactions: [] }, { name: "Business Expenses", budget: 0.00, transactions: [] }, { name: "Joint Brokerage", budget: 539.00, transactions: [{ amount: 539.00, desc: "Monthly Transfer", date: "2026-04-01" }] }, { name: "Alex Roth IRA", budget: 0.00, transactions: [] }, { name: "Jordan Roth IRA", budget: 0.00, transactions: [] }, { name: "Joint Crypto", budget: 26.95, transactions: [{ amount: 26.95, desc: "Monthly DCA", date: "2026-04-01" }] }, { name: "Jordan HSA", budget: 30.00, transactions: [{ amount: 30.00, desc: "HSA Contribution", date: "2026-04-01" }] }, { name: "401K Deposits", budget: 0.00, transactions: [] }, { name: "Extra Debt Payoff Payments", budget: 0.00, transactions: [] }]
+        income: [
+            { name: "My Paycheck", budget: 0.00, transactions: [] },
+            { name: "Mikelle's First", budget: 0.00, transactions: [] },
+            { name: "Mikelle's Second", budget: 0.00, transactions: [] }
+        ],
+        necessary: [
+            { name: "Bridge", budget: 0.00, transactions: [] },
+            { name: "4Runner payment", budget: 0.00, transactions: [] },
+            { name: "Car Wash", budget: 0.00, transactions: [] },
+            { name: "Mortgage", budget: 0.00, transactions: [] },
+            { name: "Utilities", budget: 0.00, transactions: [] },
+            { name: "Wifi", budget: 0.00, transactions: [] },
+            { name: "Tithing", budget: 0.00, transactions: [] },
+            { name: "Nanny", budget: 0.00, transactions: [] },
+            { name: "Car Insurance", budget: 0.00, transactions: [] },
+            { name: "Home Insurance", budget: 0.00, transactions: [] }
+        ],
+        discretionary: [
+            { name: "Car Upkeep", budget: 0.00, transactions: [] },
+            { name: "Date/Fun Money", budget: 0.00, transactions: [] },
+            { name: "Dining Out", budget: 0.00, transactions: [] },
+            { name: "Dogs", budget: 0.00, transactions: [] },
+            { name: "House Savings", budget: 0.00, transactions: [] },
+            { name: "Extra Car Payment", budget: 0.00, transactions: [] },
+            { name: "Gas", budget: 0.00, transactions: [] },
+            { name: "Groceries", budget: 0.00, transactions: [] },
+            { name: "Household Items", budget: 0.00, transactions: [] },
+            { name: "Shopping", budget: 0.00, transactions: [] },
+            { name: "Student Loans", budget: 0.00, transactions: [] },
+            { name: "Travel", budget: 0.00, transactions: [] },
+            { name: "Variables", budget: 0.00, transactions: [] },
+            { name: "Gym", budget: 0.00, transactions: [] },
+            { name: "Hadlee", budget: 0.00, transactions: [] },
+            { name: "Gift Money", budget: 0.00, transactions: [] },
+            { name: "Mikelle shot", budget: 0.00, transactions: [] },
+            { name: "Emergency", budget: 0.00, transactions: [] }
+        ],
+        investments: []
     };
 
     let budgetData = {};
