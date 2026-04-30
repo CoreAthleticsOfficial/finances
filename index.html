@@ -13,6 +13,9 @@
     <link rel="apple-touch-icon" href="app-icon.jpg">
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <script>
         const savedTheme = localStorage.getItem('budgetTheme');
@@ -3293,8 +3296,8 @@
         }
     }
 
-    let db, auth, setDoc_fn, doc_fn;
-    let _authModule, _fsModule; // stored for use after login
+    let db;
+    let auth;
 
     // ---- LOGIN SCREEN ----
     function showLoginScreen() {
@@ -3330,15 +3333,29 @@
             btn.textContent = 'Signing in...';
             btn.disabled = true;
             errEl.style.display = 'none';
+            
             try {
-                if (email === 'jaedan4evr@gmail.com' && password === 'Echoinghighflyer88!') {
-                    localStorage.setItem('budget_auth_v2', 'true');
+                if (email !== 'jaedan4evr@gmail.com') {
+                    throw new Error('Unauthorized email address');
+                }
+                
+                try {
+                    await auth.signInWithEmailAndPassword(email, password);
                     location.reload();
-                } else {
-                    throw new Error('Incorrect credentials');
+                } catch (err) {
+                    if (err.code === 'auth/user-not-found') {
+                        try {
+                            await auth.createUserWithEmailAndPassword(email, password);
+                            location.reload();
+                        } catch (createErr) {
+                            throw createErr;
+                        }
+                    } else {
+                        throw err;
+                    }
                 }
             } catch (err) {
-                errEl.textContent = 'Incorrect email or password. Please try again.';
+                errEl.textContent = err.message || 'Incorrect email or password. Please try again.';
                 errEl.style.display = 'block';
                 btn.textContent = 'Sign In';
                 btn.disabled = false;
@@ -3353,16 +3370,33 @@
 
     async function initCloud() {
         try {
+            const firebaseConfig = {
+              apiKey: "AIzaSyAIyWDhkQjzzGegO6mmbYKG1ndEVyn6tIc",
+              authDomain: "finances-c8542.firebaseapp.com",
+              projectId: "finances-c8542",
+              storageBucket: "finances-c8542.firebasestorage.app",
+              messagingSenderId: "629420348619",
+              appId: "1:629420348619:web:a02c4b4de9d1015e10b74e",
+              measurementId: "G-R6R8XGY921"
+            };
+
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            
+            db = firebase.firestore();
+            auth = firebase.auth();
+
             updateSyncDot('syncing');
             
-            // Check hardcoded credentials login state
-            if (localStorage.getItem('budget_auth_v2') === 'true') {
-                updateSyncDot('offline');
-                loadLocalData();
-                renderApp();
-            } else {
-                showLoginScreen();
-            }
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    setupCloudSync(user);
+                } else {
+                    updateSyncDot('offline');
+                    showLoginScreen();
+                }
+            });
 
         } catch (e) {
             console.warn("Init failed. Using local browser memory.", e);
@@ -3372,11 +3406,11 @@
         }
     }
 
-    function setupCloudSync(fsModule) {
-        const docRef = doc_fn(db, 'budget_data', 'master_save');
+    function setupCloudSync(user) {
+        const docRef = db.collection('budget_data').doc('master_save');
         
-        fsModule.onSnapshot(docRef, (docSnap) => {
-            if (docSnap.exists()) {
+        docRef.onSnapshot((docSnap) => {
+            if (docSnap.exists) {
                 const data = docSnap.data();
                 const cloudLastUpdated = data.lastUpdated || 0;
                 
@@ -3410,6 +3444,8 @@
         }, (err) => {
             console.error("Sync error", err);
             updateSyncDot('offline');
+            loadLocalData();
+            renderApp();
         });
     }
 
@@ -3425,11 +3461,11 @@
 
         localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
 
-        if (!skipCloud && db && setDoc_fn && doc_fn) {
+        if (!skipCloud && db && auth.currentUser) {
             if (!isBackgroundSync) updateSyncDot('syncing');
-            const docRef = doc_fn(db, 'budget_data', 'master_save');
+            const docRef = db.collection('budget_data').doc('master_save');
             try {
-                const saveTask = setDoc_fn(docRef, payload);
+                const saveTask = docRef.set(payload);
                 const timeoutTask = new Promise((_, reject) => setTimeout(() => reject(new Error("TIMEOUT")), 8000));
                 
                 await Promise.race([saveTask, timeoutTask]);
