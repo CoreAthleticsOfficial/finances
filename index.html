@@ -3248,8 +3248,12 @@
             btn.disabled = true;
             errEl.style.display = 'none';
             try {
-                await _authModule.signInWithEmailAndPassword(auth, email, password);
-                // onAuthStateChanged will handle the rest
+                if (email === 'jaedan4evr@gmail.com' && password === 'Echoinghighflyer88!') {
+                    localStorage.setItem('budget_auth_v2', 'true');
+                    location.reload();
+                } else {
+                    throw new Error('Incorrect credentials');
+                }
             } catch (err) {
                 errEl.textContent = 'Incorrect email or password. Please try again.';
                 errEl.style.display = 'block';
@@ -3268,44 +3272,17 @@
         try {
             updateSyncDot('syncing');
             
-            const appModule = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js');
-            _authModule = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js');
-            _fsModule = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js');
-
-            // TODO: Replace with your own Firebase project config.
-            // Go to https://console.firebase.google.com → your project → Project Settings → Your apps → SDK setup
-            const firebaseConfig = {
-              apiKey: "YOUR_API_KEY",
-              authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-              projectId: "YOUR_PROJECT_ID",
-              storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
-              messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-              appId: "YOUR_APP_ID"
-            };
-
-            const app = appModule.initializeApp(firebaseConfig);
-            auth = _authModule.getAuth(app);
-            db = _fsModule.getFirestore(app);
-            setDoc_fn = _fsModule.setDoc;
-            doc_fn = _fsModule.doc;
-
-            // Listen for auth state — show login or load app accordingly
-            _authModule.onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    // User is signed in — rebuild the page if we replaced it with login
-                    if (document.getElementById('login-wrap')) {
-                        location.reload(); // cleanest way to restore full app after login
-                    } else {
-                        setupCloudSync(_fsModule);
-                    }
-                } else {
-                    // No user — show login screen
-                    showLoginScreen();
-                }
-            });
+            // Check hardcoded credentials login state
+            if (localStorage.getItem('budget_auth_v2') === 'true') {
+                updateSyncDot('offline');
+                loadLocalData();
+                renderApp();
+            } else {
+                showLoginScreen();
+            }
 
         } catch (e) {
-            console.warn("Cloud failed. Using local browser memory.", e);
+            console.warn("Init failed. Using local browser memory.", e);
             updateSyncDot('offline');
             loadLocalData();
             renderApp();
