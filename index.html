@@ -1440,12 +1440,14 @@
             { name: "Household Items", budget: 60.00, transactions: [
                 { date: "2026-04-01", desc: "Makeup, face wash", amount: 46.73, timestamp: Date.now() }
             ] },
-            { name: "Shopping", budget: 200.00, transactions: [
+            { name: "Jaedan Shopping", budget: 100.00, transactions: [
+                { date: "2026-04-17", desc: "Top Golf w Tanner", amount: 23.00, timestamp: Date.now() }
+            ] },
+            { name: "Mikelle Shopping", budget: 100.00, transactions: [
                 { date: "2026-04-03", desc: "Mikelle called to surf", amount: 27.94, timestamp: Date.now() },
                 { date: "2026-04-03", desc: "Mikelle cricut", amount: 0.99, timestamp: Date.now() },
                 { date: "2026-04-04", desc: "Mikelle called to surf", amount: 186.96, timestamp: Date.now() },
-                { date: "2026-04-12", desc: "Mikelle shoes", amount: 15.92, timestamp: Date.now() },
-                { date: "2026-04-17", desc: "Top Golf w Tanner", amount: 23.00, timestamp: Date.now() }
+                { date: "2026-04-12", desc: "Mikelle shoes", amount: 15.92, timestamp: Date.now() }
             ] },
             { name: "Student Loans", budget: 260.00, transactions: [] },
             { name: "Travel", budget: 500.00, transactions: [
@@ -1493,7 +1495,7 @@
     let calculationRules = [];
     let localLastUpdated = 0;
 
-    const STORAGE_KEY = 'budgetAppV20_custom'; 
+    const STORAGE_KEY = 'budgetAppV21_custom'; 
     const RULES_KEY = 'budgetRulesV5_custom';
 
     function getPreviousMonthStr(monthStr) {
