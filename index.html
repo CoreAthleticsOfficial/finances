@@ -1376,27 +1376,53 @@
     }
 
     const defaultCalculationRules = [
-        { category: 'investments', name: 'Joint Brokerage', pct: 0.20, sources: 'ALL', desc: '20% of Total Income' },
-        { category: 'necessary', name: 'Tithing Donations', pct: 0.10, sources: 'ALL', desc: '10% of Total Income' },
-        { category: 'investments', name: 'Joint Crypto', pct: 0.01, sources: 'ALL', desc: '1% of Total Income' },
-        { category: 'investments', name: 'Person 1 Roth IRA', pct: 0.06, sources: ['Job 1', 'Job 2'], desc: '6% of Job 1 & Job 2' },
-        { category: 'investments', name: 'Person 2 Roth IRA', pct: 0.06, sources: ['Job 3'], desc: '6% of Job 3' }
+        { category: 'necessary', name: 'Tithing', pct: 0.10, sources: 'ALL', desc: '10% of Total Income' }
     ];
 
     const defaultAccounts = [
-        { name: 'Checking Account', balance: 0 },
-        { name: 'Savings Account', balance: 0 },
-        { name: 'Joint Brokerage', balance: 0 },
-        { name: 'Person 1 Roth IRA', balance: 0 },
-        { name: 'Person 2 Roth IRA', balance: 0 }
+        { name: 'Savings Account', balance: 0.00 }
     ];
 
     const defaultDataTemplate = {
         accounts: JSON.parse(JSON.stringify(defaultAccounts)),
-        income: [{ name: "Job 1", budget: 0.00, transactions: [] }, { name: "Job 2", budget: 0.00, transactions: [] }, { name: "Job 3", budget: 0.00, transactions: [] }, { name: "Property Management", budget: 0.00, transactions: [] }, { name: "Taxes (Refund)", budget: 0.00, transactions: [] }, { name: "Other Income", budget: 0.00, transactions: [] }],
-        necessary: [{ name: "Mortgage / Rent", budget: 0.00, transactions: [] }, { name: "Second Mortgage", budget: 0.00, transactions: [] }, { name: "Electricity", budget: 0.00, transactions: [] }, { name: "Gas / Oil", budget: 0.00, transactions: [] }, { name: "Water / Sewer", budget: 0.00, transactions: [] }, { name: "Trash / Internet / Cable", budget: 0.00, transactions: [] }, { name: "Cell / Land Line Phone", budget: 0.00, transactions: [] }, { name: "Auto Fuel", budget: 0.00, transactions: [] }, { name: "Auto Maintenance", budget: 0.00, transactions: [] }, { name: "Auto Insurance", budget: 0.00, transactions: [] }, { name: "Auto Registration / License", budget: 0.00, transactions: [] }, { name: "Groceries / Food", budget: 0.00, transactions: [] }, { name: "Home Supplies", budget: 0.00, transactions: [] }, { name: "Childcare / Dependents", budget: 0.00, transactions: [] }, { name: "Student Loans", budget: 0.00, transactions: [] }, { name: "Healthcare / Medical", budget: 0.00, transactions: [] }, { name: "Dental Care / Insurance", budget: 0.00, transactions: [] }, { name: "Vision Care / Insurance", budget: 0.00, transactions: [] }, { name: "Life Insurance", budget: 0.00, transactions: [] }, { name: "Medicine / Prescriptions", budget: 0.00, transactions: [] }, { name: "Veterinarian / Pets", budget: 0.00, transactions: [] }, { name: "School / Education", budget: 0.00, transactions: [] }, { name: "Tithing Donations", budget: 0.00, transactions: [] }, { name: "Home / Rental Insurance", budget: 0.00, transactions: [] }, { name: "Property & School Taxes", budget: 0.00, transactions: [] }, { name: "Minimum Debt Payments", budget: 0.00, transactions: [] }],
-        discretionary: [{ name: "Dining Out", budget: 0.00, transactions: [] }, { name: "Concerts / Plays / Sports", budget: 0.00, transactions: [] }, { name: "Outdoor Recreation", budget: 0.00, transactions: [] }, { name: "Other Entertainment", budget: 0.00, transactions: [] }, { name: "Gym Membership", budget: 0.00, transactions: [] }, { name: "Personal Care / Salon", budget: 0.00, transactions: [] }, { name: "Clothing", budget: 0.00, transactions: [] }, { name: "Furniture / Decor", budget: 0.00, transactions: [] }, { name: "Person 1 Spending Money", budget: 0.00, transactions: [] }, { name: "Person 2 Spending Money", budget: 0.00, transactions: [] }, { name: "Subscriptions (Apple/Spotify/etc)", budget: 0.00, transactions: [] }, { name: "Gifts / Donations", budget: 0.00, transactions: [] }, { name: "Travel / Vacation", budget: 0.00, transactions: [] }, { name: "Other Monthly Spending", budget: 0.00, transactions: [] }, { name: "Other Yearly Expense - Membership 1", budget: 0.00, yearlyAmount: 0.00, transactions: [] }, { name: "Other Yearly Expense - Membership 2", budget: 0.00, yearlyAmount: 0.00, transactions: [] }, { name: "Other Yearly Expense - Generic", budget: 0.00, yearlyAmount: 0.00, transactions: [] }],
-        investments: [{ name: "Investment - Real Estate", budget: 0.00, transactions: [] }, { name: "Business Income Expenses", budget: 0.00, transactions: [] }, { name: "Joint Brokerage", budget: 0.00, transactions: [] }, { name: "Person 1 Roth IRA", budget: 0.00, transactions: [] }, { name: "Person 2 Roth IRA", budget: 0.00, transactions: [] }, { name: "Joint Crypto", budget: 0.00, transactions: [] }, { name: "HSA", budget: 0.00, transactions: [] }, { name: "401K Deposits", budget: 0.00, transactions: [] }, { name: "Extra Debt Payoff Payments", budget: 0.00, transactions: [] }]
+        income: [
+            { name: "My Paycheck", budget: 0.00, transactions: [] },
+            { name: "Mikelle's First", budget: 0.00, transactions: [] },
+            { name: "Mikelle's Second", budget: 0.00, transactions: [] }
+        ],
+        necessary: [
+            { name: "Bridge", budget: 0.00, transactions: [] },
+            { name: "4Runner payment", budget: 0.00, transactions: [] },
+            { name: "Car Wash", budget: 0.00, transactions: [] },
+            { name: "Mortgage", budget: 0.00, transactions: [] },
+            { name: "Utilities", budget: 0.00, transactions: [] },
+            { name: "Wifi", budget: 0.00, transactions: [] },
+            { name: "Tithing", budget: 0.00, transactions: [] },
+            { name: "Nanny", budget: 0.00, transactions: [] },
+            { name: "Car Insurance", budget: 0.00, transactions: [] },
+            { name: "Home Insurance", budget: 0.00, transactions: [] }
+        ],
+        discretionary: [
+            { name: "Car Upkeep", budget: 0.00, transactions: [] },
+            { name: "Date/Fun Money", budget: 0.00, transactions: [] },
+            { name: "Dining Out", budget: 0.00, transactions: [] },
+            { name: "Dogs", budget: 0.00, transactions: [] },
+            { name: "House Savings", budget: 0.00, transactions: [] },
+            { name: "Extra Car Payment", budget: 0.00, transactions: [] },
+            { name: "Gas", budget: 0.00, transactions: [] },
+            { name: "Groceries", budget: 0.00, transactions: [] },
+            { name: "Household Items", budget: 0.00, transactions: [] },
+            { name: "Shopping", budget: 0.00, transactions: [] },
+            { name: "Student Loans", budget: 0.00, transactions: [] },
+            { name: "Travel", budget: 0.00, transactions: [] },
+            { name: "Variables", budget: 0.00, transactions: [] },
+            { name: "Gym", budget: 0.00, transactions: [] },
+            { name: "Hadlee", budget: 0.00, transactions: [] },
+            { name: "Gift Money", budget: 0.00, transactions: [] },
+            { name: "Mikelle shot", budget: 0.00, transactions: [] },
+            { name: "Emergency", budget: 0.00, transactions: [] }
+        ],
+        investments: []
     };
 
     let budgetData = {};
