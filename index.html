@@ -1386,9 +1386,9 @@
     const defaultDataTemplate = {
         accounts: JSON.parse(JSON.stringify(defaultAccounts)),
         income: [
-            { name: "Jaedan's Paycheck", budget: 4386.31, transactions: [] },
-            { name: "Mikelle's First Paycheck", budget: 1910.52, transactions: [] },
-            { name: "Mikelle's Second Paycheck", budget: 1895.20, transactions: [] },
+            { name: "Jaedan's Paycheck", budget: 4386.31, transactions: [{ date: "2026-04-01", desc: "Paycheck", amount: 4386.31, timestamp: Date.now() }] },
+            { name: "Mikelle's First Paycheck", budget: 1910.52, transactions: [{ date: "2026-04-01", desc: "Paycheck", amount: 1910.52, timestamp: Date.now() }] },
+            { name: "Mikelle's Second Paycheck", budget: 1895.20, transactions: [{ date: "2026-04-01", desc: "Paycheck", amount: 1895.20, timestamp: Date.now() }] },
             { name: "Other Income", budget: 0.00, transactions: [] }
         ],
         necessary: [
@@ -1405,21 +1405,72 @@
         ],
         discretionary: [
             { name: "Car Upkeep", budget: 0.00, transactions: [] },
-            { name: "Date/Fun Money", budget: 0.00, transactions: [] },
+            { name: "Date/Fun Money", budget: 0.00, transactions: [
+                { date: "2026-04-07", desc: "Nielsen's", amount: 3.24, timestamp: Date.now() }
+            ] },
             { name: "Dining Out", budget: 0.00, transactions: [] },
-            { name: "Dogs", budget: 0.00, transactions: [] },
+            { name: "Dogs", budget: 0.00, transactions: [
+                { date: "2026-04-11", desc: "Bark box", amount: 31.37, timestamp: Date.now() },
+                { date: "2026-04-18", desc: "Dog food", amount: 35.00, timestamp: Date.now() }
+            ] },
             { name: "House Savings", budget: 0.00, transactions: [] },
-            { name: "Extra Car Payment", budget: 0.00, transactions: [] },
-            { name: "Gas", budget: 0.00, transactions: [] },
-            { name: "Groceries", budget: 0.00, transactions: [] },
-            { name: "Household Items", budget: 0.00, transactions: [] },
-            { name: "Shopping", budget: 0.00, transactions: [] },
+            { name: "Extra Car Payment", budget: 0.00, transactions: [
+                { date: "2026-04-07", desc: "Mikelle's business", amount: 24.69, timestamp: Date.now() },
+                { date: "2026-04-08", desc: "Uhaul - Gym", amount: 51.44, timestamp: Date.now() },
+                { date: "2026-04-10", desc: "Mikelle's business", amount: 28.86, timestamp: Date.now() },
+                { date: "2026-04-14", desc: "Mikelle's business", amount: 18.44, timestamp: Date.now() }
+            ] },
+            { name: "Gas", budget: 0.00, transactions: [
+                { date: "2026-04-01", desc: "Gas", amount: 20.04, timestamp: Date.now() },
+                { date: "2026-04-01", desc: "Gas", amount: 51.80, timestamp: Date.now() },
+                { date: "2026-04-05", desc: "Gas", amount: 48.95, timestamp: Date.now() },
+                { date: "2026-04-08", desc: "Gas", amount: 54.40, timestamp: Date.now() },
+                { date: "2026-04-14", desc: "Gas", amount: 57.94, timestamp: Date.now() }
+            ] },
+            { name: "Groceries", budget: 0.00, transactions: [
+                { date: "2026-04-01", desc: "Groceries", amount: 89.86, timestamp: Date.now() },
+                { date: "2026-04-02", desc: "Groceries", amount: 149.26, timestamp: Date.now() },
+                { date: "2026-04-05", desc: "Easter dinner groceries", amount: 38.59, timestamp: Date.now() },
+                { date: "2026-04-13", desc: "Groceries", amount: 65.07, timestamp: Date.now() },
+                { date: "2026-04-17", desc: "Groceries", amount: 73.71, timestamp: Date.now() },
+                { date: "2026-04-17", desc: "Groceries", amount: 20.65, timestamp: Date.now() },
+                { date: "2026-04-18", desc: "Groceries", amount: 44.97, timestamp: Date.now() },
+                { date: "2026-04-19", desc: "Flour", amount: 6.06, timestamp: Date.now() }
+            ] },
+            { name: "Household Items", budget: 0.00, transactions: [
+                { date: "2026-04-01", desc: "Makeup, face wash", amount: 46.73, timestamp: Date.now() }
+            ] },
+            { name: "Shopping", budget: 0.00, transactions: [
+                { date: "2026-04-03", desc: "Mikelle called to surf", amount: 27.94, timestamp: Date.now() },
+                { date: "2026-04-03", desc: "Mikelle cricut", amount: 0.99, timestamp: Date.now() },
+                { date: "2026-04-04", desc: "Mikelle called to surf", amount: 186.96, timestamp: Date.now() },
+                { date: "2026-04-12", desc: "Mikelle shoes", amount: 15.92, timestamp: Date.now() },
+                { date: "2026-04-17", desc: "Top Golf w Tanner", amount: 23.00, timestamp: Date.now() }
+            ] },
             { name: "Student Loans", budget: 0.00, transactions: [] },
-            { name: "Travel", budget: 0.00, transactions: [] },
+            { name: "Travel", budget: 0.00, transactions: [
+                { date: "2026-04-05", desc: "Italy", amount: 755.84, timestamp: Date.now() },
+                { date: "2026-04-05", desc: "New York", amount: 348.33, timestamp: Date.now() },
+                { date: "2026-04-11", desc: "Arizona", amount: 13.96, timestamp: Date.now() },
+                { date: "2026-04-11", desc: "Arizona", amount: 61.04, timestamp: Date.now() },
+                { date: "2026-04-11", desc: "Birthday cake", amount: 8.94, timestamp: Date.now() },
+                { date: "2026-04-12", desc: "Arizona Shake Shack", amount: 22.23, timestamp: Date.now() },
+                { date: "2026-04-13", desc: "Airport parking", amount: 29.60, timestamp: Date.now() }
+            ] },
             { name: "Variables", budget: 0.00, transactions: [] },
             { name: "Gym", budget: 0.00, transactions: [] },
-            { name: "Hadlee", budget: 0.00, transactions: [] },
-            { name: "Gift Money", budget: 0.00, transactions: [] },
+            { name: "Hadlee", budget: 0.00, transactions: [
+                { date: "2026-04-05", desc: "Formula", amount: 82.38, timestamp: Date.now() },
+                { date: "2026-04-07", desc: "Clothes", amount: 6.45, timestamp: Date.now() },
+                { date: "2026-04-08", desc: "Formula", amount: 44.32, timestamp: Date.now() },
+                { date: "2026-04-17", desc: "Diapers", amount: 40.00, timestamp: Date.now() },
+                { date: "2026-04-17", desc: "Clothes", amount: 12.00, timestamp: Date.now() }
+            ] },
+            { name: "Gift Money", budget: 0.00, transactions: [
+                { date: "2026-04-01", desc: "Easter", amount: 24.69, timestamp: Date.now() },
+                { date: "2026-04-02", desc: "Easter", amount: 24.13, timestamp: Date.now() },
+                { date: "2026-04-02", desc: "Easter", amount: 70.90, timestamp: Date.now() }
+            ] },
             { name: "Mikelle shot", budget: 0.00, transactions: [] },
             { name: "Emergency", budget: 0.00, transactions: [] }
         ],
@@ -1442,7 +1493,7 @@
     let calculationRules = [];
     let localLastUpdated = 0;
 
-    const STORAGE_KEY = 'budgetAppV18_custom'; 
+    const STORAGE_KEY = 'budgetAppV19_custom'; 
     const RULES_KEY = 'budgetRulesV5_custom';
 
     function getPreviousMonthStr(monthStr) {
