@@ -1386,9 +1386,9 @@
     const defaultDataTemplate = {
         accounts: JSON.parse(JSON.stringify(defaultAccounts)),
         income: [
-            { name: "Jaedan's Paycheck", budget: 0.00, transactions: [] },
-            { name: "Mikelle's First Paycheck", budget: 0.00, transactions: [] },
-            { name: "Mikelle's Second Paycheck", budget: 0.00, transactions: [] },
+            { name: "Jaedan's Paycheck", budget: 4386.31, transactions: [] },
+            { name: "Mikelle's First Paycheck", budget: 1910.52, transactions: [] },
+            { name: "Mikelle's Second Paycheck", budget: 1895.20, transactions: [] },
             { name: "Other Income", budget: 0.00, transactions: [] }
         ],
         necessary: [
@@ -1442,7 +1442,7 @@
     let calculationRules = [];
     let localLastUpdated = 0;
 
-    const STORAGE_KEY = 'budgetAppV17_custom'; 
+    const STORAGE_KEY = 'budgetAppV18_custom'; 
     const RULES_KEY = 'budgetRulesV5_custom';
 
     function getPreviousMonthStr(monthStr) {
