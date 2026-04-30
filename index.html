@@ -1397,31 +1397,47 @@
         necessary: [
             { name: "Bridge", budget: 70.00, transactions: [] },
             { name: "4Runner payment", budget: 557.25, transactions: [] },
-            { name: "Car Wash", budget: 35.00, transactions: [] },
+            { name: "Car Wash", budget: 35.00, transactions: [
+                { date: "2026-04-06", desc: "Shiny Carwash", amount: 35.00, timestamp: Date.now() }
+            ] },
             { name: "Mortgage", budget: 2517.69, transactions: [] },
-            { name: "Utilities", budget: 200.00, transactions: [] },
+            { name: "Utilities", budget: 200.00, transactions: [
+                { date: "2026-04-16", desc: "City of Provo Utilities", amount: 164.72, timestamp: Date.now() }
+            ] },
             { name: "Wifi", budget: 75.00, transactions: [] },
             { name: "Tithing", budget: 819.20, transactions: [] },
             { name: "Nanny", budget: 500.00, transactions: [] },
-            { name: "Car Insurance", budget: 134.44, transactions: [] },
+            { name: "Car Insurance", budget: 134.44, transactions: [
+                { date: "2026-04-20", desc: "Progressive", amount: 134.44, timestamp: Date.now() }
+            ] },
             { name: "Home Insurance", budget: 27.00, transactions: [] }
         ],
         discretionary: [
             { name: "Car Upkeep", budget: 40.00, transactions: [] },
             { name: "Date/Fun Money", budget: 100.00, transactions: [
-                { date: "2026-04-07", desc: "Nielsen's", amount: 3.24, timestamp: Date.now() }
+                { date: "2026-04-07", desc: "Nielsen's", amount: 3.24, timestamp: Date.now() },
+                { date: "2026-04-08", desc: "Nielsens Frozen Custar", amount: 8.87, timestamp: Date.now() },
+                { date: "2026-04-19", desc: "Family Farm Adventures", amount: 41.86, timestamp: Date.now() }
             ] },
-            { name: "Dining Out", budget: 50.00, transactions: [] },
+            { name: "Dining Out", budget: 50.00, transactions: [
+                { date: "2026-04-10", desc: "Chick-fil-A", amount: 14.82, timestamp: Date.now() },
+                { date: "2026-04-12", desc: "Swig", amount: 24.36, timestamp: Date.now() },
+                { date: "2026-04-13", desc: "Vessel Kitchen", amount: 20.93, timestamp: Date.now() }
+            ] },
             { name: "Dogs", budget: 75.00, transactions: [
                 { date: "2026-04-11", desc: "Bark box", amount: 31.37, timestamp: Date.now() },
                 { date: "2026-04-18", desc: "Dog food", amount: 35.00, timestamp: Date.now() }
             ] },
             { name: "House Savings", budget: 290.00, transactions: [] },
             { name: "Extra Car Payment", budget: 417.00, transactions: [
+                { date: "2026-03-29", desc: "Facebook", amount: 5.00, timestamp: Date.now() },
+                { date: "2026-03-29", desc: "Facebook", amount: 5.00, timestamp: Date.now() },
+                { date: "2026-03-30", desc: "Facebook", amount: 7.00, timestamp: Date.now() },
                 { date: "2026-04-07", desc: "Mikelle's business", amount: 24.69, timestamp: Date.now() },
                 { date: "2026-04-08", desc: "Uhaul - Gym", amount: 51.44, timestamp: Date.now() },
                 { date: "2026-04-10", desc: "Mikelle's business", amount: 28.86, timestamp: Date.now() },
-                { date: "2026-04-14", desc: "Mikelle's business", amount: 18.44, timestamp: Date.now() }
+                { date: "2026-04-14", desc: "Mikelle's business", amount: 18.44, timestamp: Date.now() },
+                { date: "2026-04-26", desc: "Facebook", amount: 6.61, timestamp: Date.now() }
             ] },
             { name: "Gas", budget: 200.00, transactions: [
                 { date: "2026-04-01", desc: "Gas", amount: 20.04, timestamp: Date.now() },
@@ -1444,15 +1460,19 @@
                 { date: "2026-04-01", desc: "Makeup, face wash", amount: 46.73, timestamp: Date.now() }
             ] },
             { name: "Jaedan Shopping", budget: 100.00, transactions: [
-                { date: "2026-04-17", desc: "Top Golf w Tanner", amount: 23.00, timestamp: Date.now() }
+                { date: "2026-04-17", desc: "Top Golf w Tanner", amount: 23.00, timestamp: Date.now() },
+                { date: "2026-04-23", desc: "Scheels", amount: 118.18, timestamp: Date.now() }
             ] },
             { name: "Mikelle Shopping", budget: 100.00, transactions: [
                 { date: "2026-04-03", desc: "Mikelle called to surf", amount: 27.94, timestamp: Date.now() },
                 { date: "2026-04-03", desc: "Mikelle cricut", amount: 0.99, timestamp: Date.now() },
                 { date: "2026-04-04", desc: "Mikelle called to surf", amount: 186.96, timestamp: Date.now() },
-                { date: "2026-04-12", desc: "Mikelle shoes", amount: 15.92, timestamp: Date.now() }
+                { date: "2026-04-12", desc: "Mikelle shoes", amount: 15.92, timestamp: Date.now() },
+                { date: "2026-04-19", desc: "Michaels", amount: 14.80, timestamp: Date.now() }
             ] },
-            { name: "Student Loans", budget: 260.00, transactions: [] },
+            { name: "Student Loans", budget: 260.00, transactions: [
+                { date: "2026-03-31", desc: "Jostens", amount: 259.14, timestamp: Date.now() }
+            ] },
             { name: "Travel", budget: 500.00, transactions: [
                 { date: "2026-04-05", desc: "Italy", amount: 755.84, timestamp: Date.now() },
                 { date: "2026-04-05", desc: "New York", amount: 348.33, timestamp: Date.now() },
@@ -1498,7 +1518,7 @@
     let calculationRules = [];
     let localLastUpdated = 0;
 
-    const STORAGE_KEY = 'budgetAppV21_custom'; 
+    const STORAGE_KEY = 'budgetAppV22_custom'; 
     const RULES_KEY = 'budgetRulesV5_custom';
 
     function getPreviousMonthStr(monthStr) {
