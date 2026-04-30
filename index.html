@@ -522,6 +522,7 @@
         <div id="monthly-actions-container" style="display: flex; gap: 0.5rem; align-items: center; justify-content: flex-end;">
             <button onclick="openRulesModal()" class="theme-btn" style="font-size: 0.85rem;">⚙️ Rules</button>
             <button onclick="openReorderModal()" class="theme-btn" style="font-size: 0.85rem;">⇅ Reorder</button>
+            <button onclick="recoverV23()" id="btn-recover" class="theme-btn" style="background-color: var(--danger); color: white; display: none; font-size: 0.85rem;">🆘 Recover V23 Data</button>
             <button onclick="openSettingsModal()" class="theme-btn" style="font-size: 0.85rem;">💾 Data</button>
             <button id="btn-undo" onclick="handleUndo()" class="theme-btn" style="display: none; background: var(--warning); color: #fff; border: none;" title="Undo Last Action">↩ Undo</button>
         </div>
@@ -1612,6 +1613,22 @@
             if (savedRules) calculationRules = JSON.parse(savedRules);
             else calculationRules = JSON.parse(JSON.stringify(defaultCalculationRules));
         }
+
+        if (localStorage.getItem('budgetAppV23_custom')) {
+            const recoverBtn = document.getElementById('btn-recover');
+            if (recoverBtn) recoverBtn.style.display = 'inline-flex';
+        }
+    }
+
+    function recoverV23() {
+        const saved = localStorage.getItem('budgetAppV23_custom');
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(saved);
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", `recovery_v23.json`);
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
     }
 
     function pushUndoState() {
