@@ -489,7 +489,37 @@
         .nav-item svg { width: 1.35rem; height: 1.35rem; margin-bottom: 0.25rem; }
         .nav-item.active { color: var(--primary); }
 
-        .hidden { display: none !important; }
+        /* AI Action Picker & Upload UI */
+        .action-picker-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 1rem; }
+        .action-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; background: var(--bg-alt); border: 2px solid transparent; border-radius: var(--radius-xl); cursor: pointer; transition: all 0.2s; color: var(--text-strong); text-align: center; }
+        .action-btn:hover { border-color: var(--primary); background: rgba(var(--primary-rgb), 0.05); transform: translateY(-2px); }
+        .action-btn svg { width: 2.5rem; height: 2.5rem; color: var(--primary); margin-bottom: 0.75rem; }
+        .action-btn .title { font-weight: 600; font-size: 1.1rem; margin-bottom: 0.25rem; }
+        .action-btn .desc { font-size: 0.85rem; color: var(--text-muted); }
+        
+        .file-drop-zone { border: 2px dashed var(--border); border-radius: var(--radius-xl); padding: 2.5rem 1.5rem; text-align: center; cursor: pointer; background: var(--bg-alt); transition: all 0.2s; margin-top: 1rem; position: relative; overflow: hidden; }
+        .file-drop-zone:hover, .file-drop-zone.dragover { border-color: var(--primary); background: rgba(var(--primary-rgb), 0.05); }
+        .file-drop-zone svg { width: 3rem; height: 3rem; color: var(--text-muted); margin-bottom: 1rem; transition: color 0.2s; }
+        .file-drop-zone:hover svg { color: var(--primary); }
+        .file-drop-zone p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
+        .file-drop-zone .highlight { color: var(--primary); font-weight: 600; }
+        .file-drop-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; z-index: 2; }
+
+        /* AI Review Table */
+        .review-table-container { width: 100%; max-height: 400px; overflow-y: auto; overflow-x: auto; margin-top: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border); }
+        .review-table { width: 100%; min-width: 600px; border-collapse: collapse; text-align: left; }
+        .review-table th, .review-table td { padding: 0.75rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; vertical-align: middle; }
+        .review-table th { background: var(--bg-alt); font-weight: 600; color: var(--text-muted); position: sticky; top: 0; z-index: 1; }
+        .review-table input, .review-table select { width: 100%; padding: 0.4rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-card); color: var(--text-strong); font-size: 0.85rem; }
+        .review-table select { cursor: pointer; }
+        .review-table .row-delete { color: var(--danger); cursor: pointer; background: none; border: none; font-size: 1.1rem; padding: 0.4rem; border-radius: var(--radius-sm); transition: background 0.2s; display: flex; align-items: center; justify-content: center; }
+        .review-table .row-delete:hover { background: rgba(239, 68, 68, 0.1); }
+        
+        .loading-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        [data-theme="dark"] .loading-overlay { background: rgba(15,23,42,0.8); }
+        .loading-overlay.active { opacity: 1; pointer-events: all; }
+        .spinner { width: 3rem; height: 3rem; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 1rem; }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -631,7 +661,7 @@
 
 <nav id="bottom-nav-container" class="bottom-nav"></nav>
 
-<button class="fab" id="main-fab" onclick="openQuickAddModal()" title="Quick Add Transaction">
+<button class="fab" id="main-fab" onclick="openActionPickerModal()" title="Quick Add Transaction">
     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg>
 </button>
 
@@ -709,6 +739,92 @@
     </div>
 </div>
 
+<div id="action-picker-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 24rem;">
+        <div class="modal-header">
+            <h3 class="modal-title">Add Transaction</h3>
+            <button onclick="closeActionPickerModal()" class="btn-close">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="action-picker-grid">
+                <button class="action-btn" onclick="closeActionPickerModal(); openQuickAddModal();">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    <span class="title">Manual Entry</span>
+                    <span class="desc">Quickly type a single transaction</span>
+                </button>
+                <button class="action-btn" onclick="closeActionPickerModal(); openAiUploadModal();">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    <span class="title">AI Bulk Upload</span>
+                    <span class="desc">Drag & drop receipts, bank statements, or screenshots</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="ai-upload-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 28rem;">
+        <div class="loading-overlay" id="ai-upload-loading">
+            <div class="spinner"></div>
+            <h3 style="color: var(--text-strong); margin-bottom: 0.25rem;">AI is analyzing...</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">This may take up to 20 seconds</p>
+        </div>
+        <div class="modal-header">
+            <h3 class="modal-title">AI Bulk Upload</h3>
+            <button onclick="closeAiUploadModal()" class="btn-close">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem; text-align: center;">Upload bank statements (.csv, .pdf) or receipts/screenshots (.png, .jpg) to auto-categorize.</p>
+            <div class="file-drop-zone" id="ai-drop-zone" ondragover="this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="this.classList.remove('dragover')">
+                <input type="file" id="ai-file-input" multiple accept="image/*,application/pdf,text/csv" onchange="handleAiFiles(event)">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                <p><span class="highlight">Click to upload</span> or drag and drop</p>
+                <p style="font-size: 0.8rem; margin-top: 0.5rem;">Images, PDFs, or CSVs</p>
+            </div>
+            <div style="margin-top: 1rem; text-align: center;">
+                <p style="font-size: 0.75rem; color: var(--danger); display: none;" id="ai-error-msg"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="ai-review-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 90vw; max-height: 90vh;">
+        <div class="modal-header">
+            <h3 class="modal-title">Review AI Categorization</h3>
+            <button onclick="closeAiReviewModal()" class="btn-close">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div class="modal-body" style="padding: 0 1.5rem 1.5rem 1.5rem;">
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin: 1rem 0;">Please review the extracted transactions. You can modify any field or delete incorrect rows before saving.</p>
+            <div class="review-table-container">
+                <table class="review-table" id="ai-review-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%">Date</th>
+                            <th style="width: 35%">Description</th>
+                            <th style="width: 15%">Amount</th>
+                            <th style="width: 25%">Category</th>
+                            <th style="width: 10%">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Rows injected via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer" style="padding: 1rem 1.5rem; background: var(--bg-card);">
+            <button class="btn-add" style="background: var(--bg-alt); color: var(--text-strong); border: 1px solid var(--border); width: auto;" onclick="closeAiReviewModal()">Cancel</button>
+            <button class="btn-add" style="width: auto; padding: 0.8rem 2rem;" onclick="saveAiTransactions()">Save All Transactions</button>
+        </div>
+    </div>
+</div>
 <div id="quick-add-modal" class="modal-overlay">
     <div class="modal-content" style="max-width: 26rem;">
         <div class="modal-header">
@@ -758,6 +874,15 @@
                 <div class="mobile-only" style="height: 1px; background: var(--border); margin: 0.25rem 0;"></div>
 
                 <button onclick="openTabsReorderModal()" class="btn-add" style="margin: 0; background: var(--bg-card); color: var(--text-strong); border: 1px solid var(--border);">📱 Reorder Navigation Tabs</button>
+
+                <div style="height: 1px; background: var(--border); margin: 0.25rem 0;"></div>
+
+                <h4 style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem; margin-bottom: 0;">🤖 AI Configuration</h4>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label" for="gemini-api-key">Gemini API Key (Local Only)</label>
+                    <input type="password" id="gemini-api-key" class="input-text" placeholder="AIzaSy..." onchange="saveGeminiKey()">
+                </div>
+                <div style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.5rem;">Your key is stored securely in your browser cache.</div>
 
                 <div style="height: 1px; background: var(--border); margin: 0.25rem 0;"></div>
 
@@ -1048,6 +1173,9 @@
     window.openAccountsModal = openAccountsModal; window.closeAccountsModal = closeAccountsModal; window.handleUpdateAccounts = handleUpdateAccounts; window.addAccountRow = addAccountRow;
     window.openTabsReorderModal = openTabsReorderModal; window.closeTabsReorderModal = closeTabsReorderModal; window.moveNavigationTab = moveNavigationTab;
     window.openSearchModal = openSearchModal; window.closeSearchModal = closeSearchModal; window.performGlobalSearch = performGlobalSearch; window.jumpToMonth = jumpToMonth;
+    window.openActionPickerModal = openActionPickerModal; window.closeActionPickerModal = closeActionPickerModal; window.saveGeminiKey = saveGeminiKey;
+    window.openAiUploadModal = openAiUploadModal; window.closeAiUploadModal = closeAiUploadModal; window.handleAiFiles = handleAiFiles;
+    window.closeAiReviewModal = closeAiReviewModal; window.saveAiTransactions = saveAiTransactions;
 
     const fullMonthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -1672,7 +1800,10 @@
         }, 1500);
     }
 
-    function openSettingsModal() { document.getElementById('settings-modal').classList.add('active'); }
+    function openSettingsModal() { 
+        document.getElementById('gemini-api-key').value = localStorage.getItem('gemini_api_key') || '';
+        document.getElementById('settings-modal').classList.add('active'); 
+    }
     function closeSettingsModal() { document.getElementById('settings-modal').classList.remove('active'); }
 
     async function forceCloudSave() {
@@ -2352,6 +2483,198 @@
             closeQuickAddModal();
             refreshViews();
         }
+    }
+    // --- AI Integration Logic ---
+    let aiExtractedTransactions = [];
+
+    function saveGeminiKey() {
+        const val = document.getElementById('gemini-api-key').value;
+        if (val) localStorage.setItem('gemini_api_key', val);
+        else localStorage.removeItem('gemini_api_key');
+    }
+
+    function openActionPickerModal() {
+        haptic('medium');
+        document.getElementById('action-picker-modal').classList.add('active');
+    }
+    function closeActionPickerModal() { document.getElementById('action-picker-modal').classList.remove('active'); }
+
+    function openAiUploadModal() {
+        haptic('medium');
+        const key = localStorage.getItem('gemini_api_key');
+        if (!key) {
+            customAlert("You haven't added a Gemini API Key yet! Please add one in Settings (top right gear icon) first.");
+            return;
+        }
+        document.getElementById('ai-upload-modal').classList.add('active');
+        document.getElementById('ai-error-msg').style.display = 'none';
+        document.getElementById('ai-file-input').value = "";
+    }
+    function closeAiUploadModal() { document.getElementById('ai-upload-modal').classList.remove('active'); }
+    function closeAiReviewModal() { document.getElementById('ai-review-modal').classList.remove('active'); }
+
+    async function handleAiFiles(event) {
+        const files = event.target.files;
+        if (!files || files.length === 0) return;
+        
+        const key = localStorage.getItem('gemini_api_key');
+        document.getElementById('ai-upload-loading').classList.add('active');
+        document.getElementById('ai-error-msg').style.display = 'none';
+
+        try {
+            const parts = await Promise.all(Array.from(files).map(async (file) => {
+                const base64 = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result.split(',')[1]);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+                return {
+                    inlineData: {
+                        data: base64,
+                        mimeType: file.type
+                    }
+                };
+            }));
+
+            const validCats = [];
+            ['income', 'necessary', 'discretionary'].forEach(sec => {
+                budgetData[currentMonthStr][sec].forEach((item, idx) => {
+                    validCats.push(`${sec}|${idx}|${item.name}`);
+                });
+            });
+
+            const prompt = `You are a financial parsing assistant. Extract all transactions from the provided bank statements or receipts.
+Here is the exact list of my active budget categories:
+[
+${validCats.map(c => `  "${c}"`).join(',\n')}
+]
+
+Match each transaction to the best possible category string from that list (must be an exact match from the array above).
+Return ONLY a raw JSON array. No markdown blocks, no formatting.
+Format:
+[
+  { "date": "YYYY-MM-DD", "desc": "Merchant Name", "amount": 12.34, "category": "sec|idx|Name" }
+]
+If it's income, amount should be positive. If it's an expense, amount should be a positive number as well.`;
+
+            parts.unshift({ text: prompt });
+
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: parts }]
+                })
+            });
+
+            const result = await response.json();
+            if (result.error) throw new Error(result.error.message);
+
+            let rawText = result.candidates[0].content.parts[0].text;
+            rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+            
+            aiExtractedTransactions = JSON.parse(rawText);
+            
+            closeAiUploadModal();
+            renderAiReviewTable();
+        } catch (e) {
+            console.error(e);
+            document.getElementById('ai-error-msg').innerText = "Failed to parse: " + e.message;
+            document.getElementById('ai-error-msg').style.display = 'block';
+        } finally {
+            document.getElementById('ai-upload-loading').classList.remove('active');
+            event.target.value = '';
+        }
+    }
+
+    function renderAiReviewTable() {
+        haptic('medium');
+        document.getElementById('ai-review-modal').classList.add('active');
+        const tbody = document.querySelector('#ai-review-table tbody');
+        tbody.innerHTML = '';
+
+        let catOptions = '';
+        const sections = [{ id: 'income', label: 'Income' }, { id: 'necessary', label: 'Necessary Expenses' }, { id: 'discretionary', label: 'Discretionary Expenses' }, { id: 'investments', label: 'Investments / Savings' }];
+        sections.forEach(sec => {
+            catOptions += `<optgroup label="${sec.label.toUpperCase()}">`;
+            budgetData[currentMonthStr][sec.id].forEach((item, idx) => { 
+                catOptions += `<option value="${sec.id}|${idx}">${item.name}</option>`; 
+            });
+            catOptions += `</optgroup>`;
+        });
+
+        aiExtractedTransactions.forEach((tx, rowIdx) => {
+            const tr = document.createElement('tr');
+            
+            let matchedVal = "";
+            if (tx.category && tx.category.includes('|')) {
+                const parts = tx.category.split('|');
+                matchedVal = `${parts[0]}|${parts[1]}`;
+            }
+
+            tr.innerHTML = `
+                <td><input type="date" value="${tx.date || getSmartDateDefault(currentMonthStr)}" class="ai-row-date"></td>
+                <td><input type="text" value="${tx.desc || ''}" class="ai-row-desc"></td>
+                <td><input type="number" step="0.01" value="${tx.amount || ''}" class="ai-row-amount"></td>
+                <td>
+                    <select class="ai-row-category">
+                        <option value="" disabled selected>Select...</option>
+                        ${catOptions}
+                    </select>
+                </td>
+                <td style="text-align: center;">
+                    <button class="row-delete" onclick="this.closest('tr').remove()" title="Remove Row">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+            
+            if (matchedVal) {
+                const select = tr.querySelector('.ai-row-category');
+                const optionExists = Array.from(select.options).some(opt => opt.value === matchedVal);
+                if (optionExists) select.value = matchedVal;
+            }
+        });
+    }
+
+    function saveAiTransactions() {
+        pushUndoState();
+        const tbody = document.querySelector('#ai-review-table tbody');
+        const rows = tbody.querySelectorAll('tr');
+        
+        let savedCount = 0;
+        let errors = 0;
+
+        rows.forEach(tr => {
+            const dateStr = tr.querySelector('.ai-row-date').value;
+            const desc = tr.querySelector('.ai-row-desc').value;
+            const amount = parseFloat(tr.querySelector('.ai-row-amount').value);
+            const catVal = tr.querySelector('.ai-row-category').value;
+
+            if (catVal && !isNaN(amount) && desc && dateStr) {
+                const [secId, idx] = catVal.split('|');
+                const [y, m, d] = dateStr.split('-');
+                const targetMonthStr = monthNames[parseInt(m) - 1] + ' ' + y;
+                
+                getOrCreateMonthData(targetMonthStr);
+                budgetData[targetMonthStr][secId][idx].transactions.push({ date: dateStr, desc: desc, amount: amount, timestamp: Date.now() });
+                savedCount++;
+            } else {
+                errors++;
+            }
+        });
+
+        if (errors > 0) {
+            customAlert(`Saved ${savedCount} transactions, but ${errors} rows had missing fields and were skipped.`);
+        } else {
+            haptic('success');
+        }
+
+        saveData();
+        closeAiReviewModal();
+        refreshViews();
     }
 
     function toggleAddYearly() {
