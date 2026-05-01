@@ -655,6 +655,14 @@
                     <canvas id="barChart"></canvas>
                 </div>
             </div>
+            <div class="chart-container full-width">
+                <div class="chart-header">
+                    <h3 class="chart-title">Top Budget Offenders (YTD)</h3>
+                </div>
+                <div class="chart-wrapper bar">
+                    <canvas id="offendersChart"></canvas>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -1194,6 +1202,7 @@
     // Chart instances
     let pieChartInstance = null;
     let barChartInstance = null;
+    let offendersChartInstance = null;
     let nwChartInstance = null;
 
     // --- NAVIGATION LOGIC ---
@@ -3258,6 +3267,97 @@ If it's income, amount should be positive. If it's an expense, amount should be 
                     legend: { position: 'top', labels: { color: textColor } },
                     tooltip: {
                         callbacks: { label: (ctx) => ` ${ctx.dataset.label}: ${formatCurrency(ctx.raw)}` }
+                    }
+                }
+            }
+        });
+        // 4. Budget Offenders Logic (Top Over-Budget Categories YTD)
+        let categoryStats = {}; // { "Groceries": { budget: 0, spent: 0, maxOver: 0, maxMonth: '' } }
+
+        yearMonths.forEach(m => {
+            if (budgetData[m]) {
+                ['necessary', 'discretionary'].forEach(sec => {
+                    budgetData[m][sec].forEach(item => {
+                        if (!categoryStats[item.name]) {
+                            categoryStats[item.name] = { budget: 0, spent: 0, maxOver: 0, worstMonth: '' };
+                        }
+                        
+                        let spent = item.transactions.reduce((sum, tx) => sum + tx.amount, 0);
+                        let budget = parseFloat(item.budget) || 0;
+                        if (item.isYearly) budget = budget / 12;
+
+                        categoryStats[item.name].budget += budget;
+                        categoryStats[item.name].spent += spent;
+
+                        let overage = spent - budget;
+                        if (overage > categoryStats[item.name].maxOver) {
+                            categoryStats[item.name].maxOver = overage;
+                            categoryStats[item.name].worstMonth = m.split(' ')[0]; // Just the month name
+                        }
+                    });
+                });
+            }
+        });
+
+        let offenders = [];
+        for (const [name, stats] of Object.entries(categoryStats)) {
+            let totalOverage = stats.spent - stats.budget;
+            if (totalOverage > 0) {
+                offenders.push({
+                    name: name,
+                    overage: totalOverage,
+                    worstMonth: stats.worstMonth,
+                    maxOver: stats.maxOver
+                });
+            }
+        }
+
+        // Sort by highest overage first, and take top 5
+        offenders.sort((a, b) => b.overage - a.overage);
+        offenders = offenders.slice(0, 5);
+
+        // Prepare data for Chart.js
+        // We want the highest at the top, so we should reverse the arrays for the horizontal bar chart
+        const offLabels = offenders.map(o => o.name).reverse();
+        const offData = offenders.map(o => o.overage).reverse();
+        const offWorstMonths = offenders.map(o => o.worstMonth).reverse();
+        const offMaxOver = offenders.map(o => o.maxOver).reverse();
+
+        const offCtx = document.getElementById('offendersChart').getContext('2d');
+        if (offendersChartInstance) offendersChartInstance.destroy();
+        
+        let gradient = offCtx.createLinearGradient(0, 0, 400, 0);
+        gradient.addColorStop(0, 'rgba(239, 68, 68, 0.7)');
+        gradient.addColorStop(1, 'rgba(249, 115, 22, 0.9)');
+
+        offendersChartInstance = new Chart(offCtx, {
+            type: 'bar',
+            data: {
+                labels: offLabels,
+                datasets: [{
+                    label: 'Total Over Budget',
+                    data: offData,
+                    backgroundColor: gradient,
+                    borderRadius: 4,
+                    borderWidth: 1,
+                    borderColor: '#ef4444'
+                }]
+            },
+            options: {
+                indexAxis: 'y', // Horizontal bar chart
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { ticks: { color: textColor, callback: (v) => '$' + v }, grid: { color: gridColor } },
+                    y: { ticks: { color: textColor }, grid: { display: false } }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => ` Over Budget: ${formatCurrency(ctx.raw)}`,
+                            afterLabel: (ctx) => ` Worst Month: ${offWorstMonths[ctx.dataIndex]} (${formatCurrency(offMaxOver[ctx.dataIndex])} over)`
+                        }
                     }
                 }
             }
