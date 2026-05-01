@@ -3327,8 +3327,8 @@ If it's income, amount should be positive. If it's an expense, amount should be 
         if (offendersChartInstance) offendersChartInstance.destroy();
         
         let gradient = offCtx.createLinearGradient(0, 0, 400, 0);
-        gradient.addColorStop(0, 'rgba(239, 68, 68, 0.7)');
-        gradient.addColorStop(1, 'rgba(153, 27, 27, 0.9)');
+        gradient.addColorStop(0, '#f87171');
+        gradient.addColorStop(1, '#ef4444');
 
         offendersChartInstance = new Chart(offCtx, {
             type: 'bar',
