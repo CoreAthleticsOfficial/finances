@@ -2565,6 +2565,8 @@
             });
 
             const prompt = `You are a financial parsing assistant. Extract all transactions from the provided bank statements or receipts.
+CRITICAL: Unless a year is explicitly stated on the receipt, you MUST assume the year is ${currentMonthStr.split(' ')[1]}.
+
 Here is the exact list of my active budget categories:
 [
 ${validCats.map(c => `  "${c}"`).join(',\n')}
