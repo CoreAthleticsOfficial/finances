@@ -2724,12 +2724,23 @@ If it's income, amount should be positive. If it's an expense, amount should be 
             const catVal = tr.querySelector('.ai-row-category').value;
 
             if (catVal && !isNaN(amount) && desc && dateStr) {
-                const [secId, idx] = catVal.split('|');
+                const [secId, currentIdx] = catVal.split('|');
                 const [y, m, d] = dateStr.split('-');
                 const targetMonthStr = monthNames[parseInt(m) - 1] + ' ' + y;
                 
+                const catName = budgetData[currentMonthStr][secId][currentIdx].name;
+                
                 getOrCreateMonthData(targetMonthStr);
-                budgetData[targetMonthStr][secId][idx].transactions.push({ date: dateStr, desc: desc, amount: amount, timestamp: Date.now() });
+                
+                let targetCategory = budgetData[targetMonthStr][secId].find(c => c.name === catName);
+                if (!targetCategory) {
+                    targetCategory = { name: catName, budget: 0, actual: 0, transactions: [] };
+                    budgetData[targetMonthStr][secId].push(targetCategory);
+                }
+                
+                if (!targetCategory.transactions) targetCategory.transactions = [];
+                targetCategory.transactions.push({ date: dateStr, desc: desc, amount: amount, timestamp: Date.now() });
+                
                 savedCount++;
             } else {
                 errors++;
