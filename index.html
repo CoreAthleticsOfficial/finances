@@ -2624,6 +2624,12 @@ If it's income, amount should be positive. If it's an expense, amount should be 
             catOptions += `</optgroup>`;
         });
 
+        aiExtractedTransactions.sort((a, b) => {
+            const dateA = a.date || getSmartDateDefault(currentMonthStr);
+            const dateB = b.date || getSmartDateDefault(currentMonthStr);
+            return dateA.localeCompare(dateB);
+        });
+
         aiExtractedTransactions.forEach((tx, rowIdx) => {
             const tr = document.createElement('tr');
             
