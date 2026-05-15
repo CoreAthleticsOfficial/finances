@@ -3854,19 +3854,63 @@ If it's income, amount should be positive. If it's an expense, amount should be 
     }
 
     // --- BOOTSTRAP & CLOUD INIT ---
-    function revertToMay12() {
-        if (localStorage.getItem('reverted_to_may12')) return;
+    function finalMay12Restore() {
+        if (localStorage.getItem('final_may12_restore_v2')) return;
+
+        const recoveryData = {"budgetData":{"Apr 2026":{"accounts":[{"name":"Savings Account","balance":0}],"income":[{"name":"Jaedan's Paycheck","budget":4386.31,"transactions":[{"date":"2026-04-01","desc":"Paycheck","amount":4386.31,"timestamp":1777522648543}]},{"name":"Mikelle's First Paycheck","budget":1910.52,"transactions":[{"date":"2026-04-01","desc":"Paycheck","amount":1910.52,"timestamp":1777522648543}]},{"name":"Mikelle's Second Paycheck","budget":1895.2,"transactions":[{"date":"2026-04-01","desc":"Paycheck","amount":1895.2,"timestamp":1777522648543}]},{"name":"Other Income","budget":0,"transactions":[]}],"necessary":[{"name":"Bridge","budget":70,"transactions":[{"date":"2026-04-29","desc":"Bridge","amount":65,"timestamp":1777523379359}]},{"name":"4Runner payment","budget":557.25,"transactions":[{"date":"2026-04-29","desc":"4runner","amount":557.25,"timestamp":1777523308626}]},{"name":"Car Wash","budget":35,"transactions":[{"date":"2026-04-06","desc":"Shiny Carwash","amount":35,"timestamp":1777522648543}]},{"name":"Mortgage","budget":2517.69,"transactions":[{"date":"2026-04-29","desc":"Mortgage","amount":2406.41,"timestamp":1777523259409},{"date":"2026-04-29","desc":"HOA","amount":97.96,"timestamp":1777523285559}]},{"name":"Utilities","budget":200,"transactions":[{"date":"2026-04-16","desc":"City of Provo Utilities","amount":164.72,"timestamp":1777522648543}]},{"name":"Wifi","budget":75,"transactions":[{"date":"2026-04-29","desc":"Wifi","amount":75,"timestamp":1777523430193}]},{"name":"Tithing","budget":819.2,"transactions":[]},{"name":"Nanny","budget":500,"transactions":[{"date":"2026-04-29","desc":"Nanny","amount":200,"timestamp":1777523392325}]},{"name":"Car Insurance","budget":134.44,"transactions":[{"date":"2026-04-20","desc":"Progressive","amount":134.44,"timestamp":1777522648543}]},{"name":"Home Insurance","budget":27,"transactions":[]}],"discretionary":[{"name":"Car Upkeep","budget":40,"transactions":[]},{"name":"Date/Fun Money","budget":100,"transactions":[{"date":"2026-04-07","desc":"Nielsen's","amount":3.24,"timestamp":1777522648543},{"date":"2026-04-08","desc":"Nielsens Frozen Custar","amount":8.87,"timestamp":1777522648543},{"date":"2026-04-19","desc":"Family Farm Adventures","amount":41.86,"timestamp":1777522648543},{"date":"2026-04-29","desc":"Escape Room","amount":80,"timestamp":1777523360342}]},{"name":"Dining Out","budget":50,"transactions":[{"date":"2026-04-10","desc":"Chick-fil-A","amount":14.82,"timestamp":1777522648543},{"date":"2026-04-12","desc":"Swig","amount":24.36,"timestamp":1777522648543},{"date":"2026-04-13","desc":"Vessel Kitchen","amount":20.93,"timestamp":1777522648543}]},{"name":"Dogs","budget":75,"transactions":[{"date":"2026-04-11","desc":"Bark box","amount":31.37,"timestamp":1777522648543},{"date":"2026-04-18","desc":"Dog food","amount":35,"timestamp":1777522648543}]},{"name":"House Savings","budget":290,"transactions":[]},{"name":"Extra Car Payment","budget":417,"transactions":[{"date":"2026-03-29","desc":"Facebook","amount":5,"timestamp":1777522648543},{"date":"2026-03-29","desc":"Facebook","amount":5,"timestamp":1777522648543},{"date":"2026-03-30","desc":"Facebook","amount":7,"timestamp":1777522648543},{"date":"2026-04-07","desc":"Mikelle's business","amount":24.69,"timestamp":1777522648543},{"date":"2026-04-08","desc":"Uhaul - Gym","amount":51.44,"timestamp":1777522648543},{"date":"2026-04-10","desc":"Mikelle's business","amount":28.86,"timestamp":1777522648543},{"date":"2026-04-14","desc":"Mikelle's business","amount":18.44,"timestamp":1777522648543},{"date":"2026-04-26","desc":"Facebook","amount":6.61,"timestamp":1777522648543},{"date":"2026-04-29","desc":"Couch","amount":112,"timestamp":1777523234326}]},{"name":"Gas","budget":200,"transactions":[{"date":"2026-04-01","desc":"Gas","amount":20.04,"timestamp":1777522648543},{"date":"2026-04-01","desc":"Gas","amount":51.8,"timestamp":1777522648543},{"date":"2026-04-05","desc":"Gas","amount":48.95,"timestamp":1777522648543},{"date":"2026-04-08","desc":"Gas","amount":54.4,"timestamp":1777522648543},{"date":"2026-04-14","desc":"Gas","amount":57.94,"timestamp":1777522648543},{"date":"2026-04-22","desc":"COSTCO GAS","amount":52.16,"timestamp":1777522648543},{"date":"2026-04-27","desc":"COSTCO GAS","amount":63.32,"timestamp":1777522648543}]},{"name":"Groceries","budget":450,"transactions":[{"date":"2026-04-01","desc":"Groceries","amount":89.86,"timestamp":1777522648543},{"date":"2026-04-02","desc":"Groceries","amount":149.26,"timestamp":1777522648543},{"date":"2026-04-05","desc":"Easter dinner groceries","amount":38.59,"timestamp":1777522648543},{"date":"2026-04-13","desc":"Groceries","amount":65.07,"timestamp":1777522648543},{"date":"2026-04-17","desc":"Groceries","amount":73.71,"timestamp":1777522648543},{"date":"2026-04-17","desc":"Groceries","amount":20.65,"timestamp":1777522648543},{"date":"2026-04-18","desc":"Groceries","amount":44.97,"timestamp":1777522648543},{"date":"2026-04-19","desc":"Flour","amount":6.06,"timestamp":1777522648543},{"date":"2026-04-20","desc":"TRADER JOE S","amount":10.78,"timestamp":1777522648543},{"date":"2026-04-22","desc":"COSTCO WHSE","amount":14.03,"timestamp":1777522648543},{"date":"2026-04-24","desc":"HARMONS","amount":70.4,"timestamp":1777522648543},{"date":"2026-04-28","desc":"TARGET STORE","amount":61.09,"timestamp":1777522648543},{"date":"2026-04-29","desc":"COSTCO WHSE","amount":19.33,"timestamp":1777522648543}]},{"name":"Household Items","budget":60,"transactions":[{"date":"2026-04-01","desc":"Makeup, face wash","amount":46.73,"timestamp":1777522648543},{"date":"2026-04-25","desc":"SP CRAE.HOME","amount":10.75,"timestamp":1777522648543},{"date":"2026-04-28","desc":"TARGET STORE","amount":13,"timestamp":1777522648543}]},{"name":"Jaedan Shopping","budget":100,"transactions":[{"date":"2026-04-17","desc":"Top Golf w Tanner","amount":23,"timestamp":1777522648543},{"date":"2026-04-23","desc":"Scheels","amount":118.18,"timestamp":1777522648543},{"date":"2026-04-24","desc":"MERRELL.COM","amount":159.83,"timestamp":1777522648543},{"date":"2026-04-24","desc":"NORDRACKCOM","amount":60,"timestamp":1777522648543}]},{"name":"Mikelle Shopping","budget":100,"transactions":[{"date":"2026-04-03","desc":"Mikelle called to surf","amount":27.94,"timestamp":1777522648543},{"date":"2026-04-03","desc":"Mikelle cricut","amount":0.99,"timestamp":1777522648543},{"date":"2026-04-04","desc":"Mikelle called to surf","amount":186.96,"timestamp":1777522648543},{"date":"2026-04-12","desc":"Mikelle shoes","amount":15.92,"timestamp":1777522648543},{"date":"2026-04-19","desc":"Michaels","amount":14.8,"timestamp":1777522648543},{"date":"2026-04-21","desc":"SP PIPERANDSCOOT","amount":36.53,"timestamp":1777522648543},{"date":"2026-04-24","desc":"ULTA","amount":38.68,"timestamp":1777522648543},{"date":"2026-04-24","desc":"NORDRACKCOM","amount":79.62,"timestamp":1777522648543},{"date":"2026-04-25","desc":"SP THREADWALLETS","amount":51.58,"timestamp":1777522648543},{"date":"2026-04-27","desc":"VICTORIA'S SECRET","amount":53.67,"timestamp":1777522648543},{"date":"2026-04-29","desc":"SP PRO LASH","amount":68.49,"timestamp":1777522648543}]},{"name":"Student Loans","budget":260,"transactions":[{"date":"2026-03-31","desc":"Jostens","amount":259.14,"timestamp":1777522648543}]},{"name":"Travel","budget":500,"transactions":[{"date":"2026-04-05","desc":"Italy","amount":755.84,"timestamp":1777522648543},{"date":"2026-04-05","desc":"New York","amount":348.33,"timestamp":1777522648543},{"date":"2026-04-11","desc":"Arizona","amount":13.96,"timestamp":1777522648543},{"date":"2026-04-11","desc":"Arizona","amount":61.04,"timestamp":1777522648543},{"date":"2026-04-11","desc":"Birthday cake","amount":8.94,"timestamp":1777522648543},{"date":"2026-04-12","desc":"Arizona Shake Shack","amount":22.23,"timestamp":1777522648543},{"date":"2026-04-13","desc":"Airport parking","amount":29.6,"timestamp":1777522648543}]},{"name":"Variables","budget":163,"transactions":[]},{"name":"Gym","budget":32,"transactions":[]},{"name":"Hadlee","budget":150,"transactions":[{"date":"2026-04-05","desc":"Formula","amount":82.38,"timestamp":1777522648543},{"date":"2026-04-07","desc":"Clothes","amount":6.45,"timestamp":1777522648543},{"date":"2026-04-08","desc":"Formula","amount":44.32,"timestamp":1777522648543},{"date":"2026-04-17","desc":"Diapers","amount":40,"timestamp":1777522648543},{"date":"2026-04-17","desc":"Clothes","amount":12,"timestamp":1777522648543},{"date":"2026-04-24","desc":"WWW COSTCO COM","amount":164.76,"timestamp":1777522648543}]},{"name":"Gift Money","budget":120,"transactions":[{"date":"2026-04-01","desc":"Easter","amount":24.69,"timestamp":1777522648543},{"date":"2026-04-02","desc":"Easter","amount":24.13,"timestamp":1777522648543},{"date":"2026-04-02","desc":"Easter","amount":70.9,"timestamp":1777522648543},{"date":"2026-04-24","desc":"HARMONS","amount":20,"timestamp":1777522648543}]},{"name":"Mikelle shot","budget":150,"transactions":[]},{"name":"Emergency","budget":0,"transactions":[{"date":"2026-04-23","desc":"HYROX (Combined - Venmo Offset)","amount":574.14,"timestamp":1777522648543}]}],"investments":[{"name":"Jaedan 401K","budget":0,"transactions":[]},{"name":"Mikelle 401k","budget":0,"transactions":[]}]}},"calculationRules":[{"category":"necessary","name":"Tithing","pct":0.1,"sources":"ALL","desc":"10% of Total Income"}],"lastUpdated":1777524668502};
+
+        let allTransactions = [];
         
-        if (budgetData["Apr 2026"]) {
-            budgetData["May 2026"] = JSON.parse(JSON.stringify(budgetData["Apr 2026"]));
-            saveData(false, true);
-        }
+        ['Mar 2026', 'Apr 2026', 'May 2026'].forEach(monthStr => {
+            if (budgetData[monthStr]) {
+                ['income', 'necessary', 'discretionary', 'investments'].forEach(sec => {
+                    if (budgetData[monthStr][sec]) {
+                        budgetData[monthStr][sec].forEach(cat => {
+                            if (cat.transactions) {
+                                cat.transactions.forEach(tx => {
+                                    allTransactions.push({ ...tx, _originalSec: sec, _originalCatName: cat.name });
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        delete budgetData['Mar 2026'];
+        delete budgetData['Apr 2026'];
         
-        localStorage.setItem('reverted_to_may12', 'true');
+        if (!budgetData["May 2026"]) budgetData["May 2026"] = JSON.parse(JSON.stringify(recoveryData.budgetData["Apr 2026"]));
+        
+        ['income', 'necessary', 'discretionary', 'investments'].forEach(sec => {
+            if(budgetData["May 2026"][sec]) budgetData["May 2026"][sec].forEach(item => { item.transactions = []; });
+        });
+        
+        allTransactions.forEach(tx => {
+            const sec = tx._originalSec;
+            let targetCat = budgetData["May 2026"][sec].find(c => c.name === tx._originalCatName);
+            if (!targetCat) {
+                targetCat = { name: tx._originalCatName, budget: 0, actual: 0, transactions: [] };
+                budgetData["May 2026"][sec].push(targetCat);
+            }
+            if (!targetCat.transactions) targetCat.transactions = [];
+            
+            const cleanTx = { ...tx };
+            delete cleanTx._originalSec;
+            delete cleanTx._originalCatName;
+            
+            targetCat.transactions.push(cleanTx);
+        });
+
+        budgetData["Apr 2026"] = JSON.parse(JSON.stringify(recoveryData.budgetData["Apr 2026"]));
+
+        saveData(false, true);
+        localStorage.setItem('final_may12_restore_v2', 'true');
+        console.log("Successfully restored May 12th state!");
     }
 
     function renderApp() {
-        revertToMay12();
+        finalMay12Restore();
         renderNavigation();
 
         const yearSelect = document.getElementById('year-selector');
