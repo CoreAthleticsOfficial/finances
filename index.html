@@ -3549,14 +3549,32 @@ If it's income, amount should be positive. If it's an expense, amount should be 
         if (desc && !isNaN(amount) && date) {
             pushUndoState();
             haptic('medium');
+            
+            const [y, m, d] = date.split('-');
+            const targetMonthStr = monthNames[parseInt(m) - 1] + ' ' + y;
+            getOrCreateMonthData(targetMonthStr);
+            
+            const catName = budgetData[currentMonthStr][activeModalCategory][activeModalIndex].name;
+            let targetCategory = budgetData[targetMonthStr][activeModalCategory].find(c => c.name === catName);
+            if (!targetCategory) {
+                targetCategory = { name: catName, budget: 0, actual: 0, transactions: [] };
+                budgetData[targetMonthStr][activeModalCategory].push(targetCategory);
+            }
+            if (!targetCategory.transactions) targetCategory.transactions = [];
+            
             if (editingTxIndex !== null) {
+                // If editing, we need to remove the old transaction from its original location
                 const oldTx = budgetData[currentMonthStr][activeModalCategory][activeModalIndex].transactions[editingTxIndex];
-                budgetData[currentMonthStr][activeModalCategory][activeModalIndex].transactions[editingTxIndex] = { date: date, desc: desc, amount: amount, timestamp: oldTx.timestamp || Date.now() };
+                budgetData[currentMonthStr][activeModalCategory][activeModalIndex].transactions.splice(editingTxIndex, 1);
+                
+                // Add the updated one to the new target location
+                targetCategory.transactions.push({ date: date, desc: desc, amount: amount, timestamp: oldTx.timestamp || Date.now() });
+                
                 editingTxIndex = null;
                 document.getElementById('btn-add-tx').innerText = "Add Transaction";
                 document.getElementById('btn-cancel-tx').style.display = "none";
             } else {
-                budgetData[currentMonthStr][activeModalCategory][activeModalIndex].transactions.push({ date: date, desc: desc, amount: amount, timestamp: Date.now() });
+                targetCategory.transactions.push({ date: date, desc: desc, amount: amount, timestamp: Date.now() });
             }
             saveData();
             renderTransactionsList();
@@ -3837,6 +3855,7 @@ If it's income, amount should be positive. If it's an expense, amount should be 
 
     // --- BOOTSTRAP & CLOUD INIT ---
     function renderApp() {
+        cleanupTransactions();
         renderNavigation();
 
         const yearSelect = document.getElementById('year-selector');
@@ -3893,6 +3912,50 @@ If it's income, amount should be positive. If it's an expense, amount should be 
 
     let db;
     let auth;
+
+    function cleanupTransactions() {
+        let movedCount = 0;
+        Object.keys(budgetData).forEach(monthStr => {
+            const [mName, yStr] = monthStr.split(' ');
+            const mIdx = monthNames.indexOf(mName) + 1;
+            const expectedPrefix = `${yStr}-${mIdx.toString().padStart(2, '0')}`;
+            
+            ['income', 'necessary', 'discretionary', 'investments'].forEach(sec => {
+                if (budgetData[monthStr] && budgetData[monthStr][sec]) {
+                    budgetData[monthStr][sec].forEach(cat => {
+                        if (cat.transactions) {
+                            for (let i = cat.transactions.length - 1; i >= 0; i--) {
+                                const tx = cat.transactions[i];
+                                if (tx.date && !tx.date.startsWith(expectedPrefix)) {
+                                    // It belongs in a different month
+                                    const [txY, txM, txD] = tx.date.split('-');
+                                    const targetMonthStr = monthNames[parseInt(txM) - 1] + ' ' + txY;
+                                    
+                                    getOrCreateMonthData(targetMonthStr);
+                                    let targetCat = budgetData[targetMonthStr][sec].find(c => c.name === cat.name);
+                                    if (!targetCat) {
+                                        targetCat = { name: cat.name, budget: 0, actual: 0, transactions: [] };
+                                        budgetData[targetMonthStr][sec].push(targetCat);
+                                    }
+                                    if (!targetCat.transactions) targetCat.transactions = [];
+                                    targetCat.transactions.push(tx);
+                                    
+                                    // Remove from current month
+                                    cat.transactions.splice(i, 1);
+                                    movedCount++;
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        });
+        
+        if (movedCount > 0) {
+            console.log(`Auto-cleaned ${movedCount} misplaced transactions.`);
+            saveData(false, true); // Save changes silently
+        }
+    }
 
     // ---- LOGIN SCREEN ----
     function showLoginScreen() {
