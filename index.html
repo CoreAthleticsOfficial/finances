@@ -3854,55 +3854,85 @@ If it's income, amount should be positive. If it's an expense, amount should be 
     }
 
     // --- BOOTSTRAP & CLOUD INIT ---
-    function rescueMayData() {
-        if (localStorage.getItem('may_data_rescued_v2')) return;
+    function ultimateRestore() {
+        if (localStorage.getItem('ultimate_restore_v2')) return;
         
-        const threshold = 1778371200000; // May 10, 2026
-        let rescuedCount = 0;
+        let allTransactions = [];
         
-        getOrCreateMonthData("May 2026");
-        
+        // 1. Collect ALL transactions from ALL months
         Object.keys(budgetData).forEach(monthStr => {
-            if (monthStr === "May 2026") return;
-            
             ['income', 'necessary', 'discretionary', 'investments'].forEach(sec => {
                 if (budgetData[monthStr] && budgetData[monthStr][sec]) {
                     budgetData[monthStr][sec].forEach(cat => {
                         if (cat.transactions) {
-                            for (let i = cat.transactions.length - 1; i >= 0; i--) {
-                                const tx = cat.transactions[i];
-                                if (tx.timestamp && tx.timestamp >= threshold) {
-                                    let targetCat = budgetData["May 2026"][sec].find(c => c.name === cat.name);
-                                    if (!targetCat) {
-                                        targetCat = { name: cat.name, budget: 0, actual: 0, transactions: [] };
-                                        budgetData["May 2026"][sec].push(targetCat);
-                                    }
-                                    if (!targetCat.transactions) targetCat.transactions = [];
-                                    targetCat.transactions.push(tx);
-                                    
-                                    cat.transactions.splice(i, 1);
-                                    rescuedCount++;
-                                }
-                            }
+                            cat.transactions.forEach(tx => {
+                                allTransactions.push({
+                                    ...tx,
+                                    _originalSec: sec,
+                                    _originalCatName: cat.name
+                                });
+                            });
+                            // Erase transactions from the category
+                            cat.transactions = [];
                         }
                     });
                 }
             });
+        });
+        
+        // 2. Re-distribute transactions based on their date
+        allTransactions.forEach(tx => {
+            let targetMonthStr = null;
             
-            if (monthStr.startsWith("undefined")) {
+            if (tx.date) {
+                const [txY, txM, txD] = tx.date.split('-');
+                if (txM && txY && txM.length === 2) {
+                    const mIdx = parseInt(txM) - 1;
+                    if (mIdx >= 0 && mIdx < 12) {
+                        targetMonthStr = monthNames[mIdx] + ' ' + txY;
+                    }
+                }
+            }
+            
+            // Fallback if date is missing, mangled, or from AI bulk upload formatting issues
+            if (!targetMonthStr && tx.timestamp) {
+                const d = new Date(tx.timestamp);
+                targetMonthStr = monthNames[d.getMonth()] + ' ' + d.getFullYear();
+            }
+            
+            if (targetMonthStr) {
+                getOrCreateMonthData(targetMonthStr);
+                const sec = tx._originalSec;
+                let targetCat = budgetData[targetMonthStr][sec].find(c => c.name === tx._originalCatName);
+                if (!targetCat) {
+                    targetCat = { name: tx._originalCatName, budget: 0, actual: 0, transactions: [] };
+                    budgetData[targetMonthStr][sec].push(targetCat);
+                }
+                if (!targetCat.transactions) targetCat.transactions = [];
+                
+                // Clean up temporary tracking fields
+                const cleanTx = { ...tx };
+                delete cleanTx._originalSec;
+                delete cleanTx._originalCatName;
+                
+                targetCat.transactions.push(cleanTx);
+            }
+        });
+        
+        // 3. Clean up garbage month keys created by previous bugs
+        Object.keys(budgetData).forEach(monthStr => {
+            if (monthStr !== "Apr 2026" && monthStr !== "May 2026" && (monthStr.startsWith("undefined") || monthStr === "April 2026")) {
                 delete budgetData[monthStr];
             }
         });
         
-        if (rescuedCount > 0) {
-            console.log(`Rescued ${rescuedCount} transactions back to May!`);
-            saveData(false, true);
-        }
-        localStorage.setItem('may_data_rescued_v2', 'true');
+        saveData(false, true);
+        localStorage.setItem('ultimate_restore_v2', 'true');
+        console.log("Ultimate Restore Complete!");
     }
 
     function renderApp() {
-        rescueMayData();
+        ultimateRestore();
         renderNavigation();
 
         const yearSelect = document.getElementById('year-selector');
