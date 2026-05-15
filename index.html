@@ -3854,7 +3854,55 @@ If it's income, amount should be positive. If it's an expense, amount should be 
     }
 
     // --- BOOTSTRAP & CLOUD INIT ---
+    function rescueMayData() {
+        if (localStorage.getItem('may_data_rescued_v2')) return;
+        
+        const threshold = 1778371200000; // May 10, 2026
+        let rescuedCount = 0;
+        
+        getOrCreateMonthData("May 2026");
+        
+        Object.keys(budgetData).forEach(monthStr => {
+            if (monthStr === "May 2026") return;
+            
+            ['income', 'necessary', 'discretionary', 'investments'].forEach(sec => {
+                if (budgetData[monthStr] && budgetData[monthStr][sec]) {
+                    budgetData[monthStr][sec].forEach(cat => {
+                        if (cat.transactions) {
+                            for (let i = cat.transactions.length - 1; i >= 0; i--) {
+                                const tx = cat.transactions[i];
+                                if (tx.timestamp && tx.timestamp >= threshold) {
+                                    let targetCat = budgetData["May 2026"][sec].find(c => c.name === cat.name);
+                                    if (!targetCat) {
+                                        targetCat = { name: cat.name, budget: 0, actual: 0, transactions: [] };
+                                        budgetData["May 2026"][sec].push(targetCat);
+                                    }
+                                    if (!targetCat.transactions) targetCat.transactions = [];
+                                    targetCat.transactions.push(tx);
+                                    
+                                    cat.transactions.splice(i, 1);
+                                    rescuedCount++;
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+            
+            if (monthStr.startsWith("undefined")) {
+                delete budgetData[monthStr];
+            }
+        });
+        
+        if (rescuedCount > 0) {
+            console.log(`Rescued ${rescuedCount} transactions back to May!`);
+            saveData(false, true);
+        }
+        localStorage.setItem('may_data_rescued_v2', 'true');
+    }
+
     function renderApp() {
+        rescueMayData();
         renderNavigation();
 
         const yearSelect = document.getElementById('year-selector');
